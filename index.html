@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画板</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        var canvas = document.getElementById("canvas");
+        canvas.width = document.documentElement.clientWidth
+        canvas.height = document.documentElement.clientHeight
+        let paint = false;
+
+        let isTouchDevice = 'ontouchstart' in document.documentElement
+        var ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = 'none'
+        ctx.lineWidth = 6
+        ctx.lineCap = 'round'
+        let last;
+
+        if (isTouchDevice) {
+            canvas.ontouchmove = (e) => {
+                ctx.beginPath();
+                DrawLine(last[0],last[1],e.touches[0].clientX, e.touches[0].clientY);
+                last = [e.touches[0].clientX,e.touches[0].clientY]
+                ctx.fill();
+
+            }
+
+            canvas.ontouchstart =(e)=>{
+
+                last = [e.touches[0].clientX,e.touches[0].clientY]
+
+            }
+
+        }
+        else {
+
+            canvas.onmousemove = (e) => {
+                if (paint === true) {
+                    ctx.beginPath();
+                    DrawLine(last[0], last[1],e.clientX,e.clientY);
+                    last = [e.clientX,e.clientY]
+                    ctx.fill();
+                }
+            }
+
+            canvas.onmousedown = (e) => {
+                paint = true;
+                last = [e.clientX,e.clientY]
+            }
+            canvas.onmouseup = () => {
+                paint = false;
+            }
+
+        }
+
+         function DrawLine (x1,y1,x2,y2) {
+
+            ctx.beginPath();
+             ctx.moveTo(x1, y1);
+             ctx.lineTo(x2, y2);
+             ctx.stroke();
+             
+         }
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
